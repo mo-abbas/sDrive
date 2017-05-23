@@ -17,4 +17,9 @@ def opengl_to_image(srcPath, outputPath):
     merged = np.flipud(merged)
     Image.fromarray(merged).save(outputPath)
 
-opengl_to_image(sys.argv[1], sys.argv[2])
+if __name__ == "__main__":
+    import os
+    for file in os.listdir('.'):
+        if file.endswith('bmp'):
+            opengl_to_image(file, file[:-3] + 'png')
+            os.remove(file)

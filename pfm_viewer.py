@@ -74,7 +74,6 @@ def writePFM(file, image, scale=1):
 def main():
     args = sys.argv
     img1, _ = readPFM(args[1])
-    print np.max(img1)
     img2 = Image.fromarray(img1)
     img2.show()
 

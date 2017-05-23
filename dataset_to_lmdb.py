@@ -8,6 +8,10 @@ import PIL
 import numpy as np
 import argparse
 
+datasetListFilename = None
+datasetLmdbFilename = None
+testOutputFolder = None
+
 initialMapSize = 10 * (2**20) # 10MB
 batchSize = 100
 
@@ -28,7 +32,7 @@ def test():
             np.fromstring(datum.data[img1Limits:img2Limits], dtype=np.uint8) \
             .reshape(3, datum.height, datum.width)
         disparity = \
-            np.fromstring(datum.data[img2Limits:], dtype=np.int16) \
+            np.fromstring(datum.data[img2Limits:], dtype=np.uint16) \
             .reshape(datum.height, datum.width)
 
         image1 = np.rollaxis(np.rollaxis(image1, 2), 2)
@@ -158,32 +162,29 @@ def convert():
     lmdbEnvironment.close()
     print "Done"
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("type", choices=["main", "test"],
-            help="Operation done by the script")
-    parser.add_argument("lmdbFilename",
-            help="The path of the lmdb database folder")
-    parser.add_argument("-l", "--list",
-            help="The path for the data list to insert in the database (ignored during test)")
-    parser.add_argument("-t", "--test",
-            help="The path for the test output folder")
-
-    args = parser.parse_args()
-    datasetListFilename = args.list
-    datasetLmdbFilename = args.lmdbFilename
-    testOutputFolder = args.test
-
-    if args.type == "main":
-        if not datasetListFilename:
-            print "Missing the path for the data list"
-        else:
-            convert()
-    elif args.type == "test":
-        if not testOutputFolder:
-            print "Missing the path for the test output folder"
-        else:
-            test()
-
 if __name__ == "__main__":
-    main()
+	parser = argparse.ArgumentParser()
+	parser.add_argument("type", choices=["main", "test"],
+			help="Operation done by the script")
+	parser.add_argument("lmdbFilename",
+			help="The path of the lmdb database folder")
+	parser.add_argument("-l", "--list",
+			help="The path for the data list to insert in the database (ignored during test)")
+	parser.add_argument("-t", "--test",
+			help="The path for the test output folder")
+
+	args = parser.parse_args()
+	datasetListFilename = args.list
+	datasetLmdbFilename = args.lmdbFilename
+	testOutputFolder = args.test
+
+	if args.type == "main":
+		if not datasetListFilename:
+			print "Missing the path for the data list"
+		else:
+			convert()
+	elif args.type == "test":
+		if not testOutputFolder:
+			print "Missing the path for the test output folder"
+		else:
+			test()
