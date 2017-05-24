@@ -1,0 +1,622 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Layers">
+      <UniqueIdentifier>{466eb991-0bfa-4359-94b6-46f368e0d361}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\util">
+      <UniqueIdentifier>{fba65b4b-e79b-4722-a6a9-5f6614e4374e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\proto">
+      <UniqueIdentifier>{1857f4aa-30e5-4093-9942-3a34af98138d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\solvers">
+      <UniqueIdentifier>{1b7f4f7f-f834-447e-8705-85e1d25cba75}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\blob.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\data_reader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\data_transformer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal_thread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\bias_layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\bnll_layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\memory_data_layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\multinomial_logistic_loss_layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layer_factory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\net.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\parallel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\solver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\syncedmem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\absval_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\accuracy_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\solvers\adadelta_solver.cpp">
+      <Filter>Source Files\solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\solvers\adagrad_solver.cpp">
+      <Filter>Source Files\solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\solvers\adam_solver.cpp">
+      <Filter>Source Files\solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\argmax_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\augmentation_layer_base.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\base_conv_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\base_data_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\batch_norm_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\batch_reindex_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\concat_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\contrastive_loss_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\conv_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\correlation_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\correlation_layer1d.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\crop_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\cudnn_conv_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\cudnn_lcn_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\cudnn_lrn_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\cudnn_pooling_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\cudnn_relu_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\cudnn_sigmoid_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\cudnn_softmax_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\cudnn_tanh_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\custom_data_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\data_augmentation_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\data_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\deconv_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\disparity_data_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\downsample_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\dropout_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\dummy_data_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\eltwise_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\elu_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\embed_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\euclidean_loss_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\exp_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\filter_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\flatten_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\floatreader_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\floatwriter_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\flow_augmentation_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\flowriter_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\generate_augmentation_parameters_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\hdf5_data_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\hdf5_output_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\hinge_loss_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\im2col_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\image_data_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\imgreader_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\imgwriter_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\infogain_loss_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\inner_product_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\input_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\l1loss_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\log_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\loss_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\lrn_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\lstm_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\lstm_unit_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\mean_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\mvn_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\neg_relu_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\neuron_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\parameter_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\pfmwriter_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\pooling_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\power_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\prelu_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\recurrent_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\reduction_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\relu_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\resample_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\reshape_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\rnn_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\scale_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\sigmoid_cross_entropy_loss_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\sigmoid_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\silence_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\slice_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\softmax_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\softmax_loss_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\split_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\spp_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\tanh_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\threshold_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\tile_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\window_data_layer.cpp">
+      <Filter>Source Files\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\benchmark.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\blocking_queue.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\cudnn.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\db.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\db_leveldb.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\db_lmdb.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\hdf5.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\im2col.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\insert_splits.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\io.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\math_functions.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\output.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\rng.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\signal_handler.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\upgrade_proto.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\solvers\nesterov_solver.cpp">
+      <Filter>Source Files\solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\solvers\rmsprop_solver.cpp">
+      <Filter>Source Files\solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\solvers\sgd_solver.cpp">
+      <Filter>Source Files\solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\proto\caffe.pb.cc">
+      <Filter>Source Files\proto</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="src\layers\tile_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\threshold_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\tanh_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\split_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\softmax_loss_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\softmax_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\slice_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\silence_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\sigmoid_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\sigmoid_cross_entropy_loss_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\util\im2col.cu">
+      <Filter>Source Files\util</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\util\math_functions.cu">
+      <Filter>Source Files\util</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\solvers\sgd_solver.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\absval_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\solvers\adadelta_solver.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\solvers\adagrad_solver.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\solvers\adam_solver.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\base_data_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\batch_norm_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\batch_reindex_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\bias_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\bnll_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\concat_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\contrastive_loss_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\conv_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\correlation_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\correlation_layer1d.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\crop_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\cudnn_conv_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\cudnn_lcn_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\cudnn_lrn_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\cudnn_pooling_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\cudnn_relu_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\cudnn_sigmoid_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\cudnn_softmax_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\cudnn_tanh_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\custom_data_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\data_augmentation_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\deconv_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\downsample_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\dropout_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\eltwise_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\elu_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\embed_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\euclidean_loss_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\exp_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\filter_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\flow_augmentation_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\generate_augmentation_parameters_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\hdf5_data_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\hdf5_output_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\im2col_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\inner_product_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\l1loss_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\log_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\lrn_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\lstm_unit_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\mvn_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\neg_relu_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\solvers\nesterov_solver.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\pooling_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\power_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\prelu_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\recurrent_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\reduction_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\relu_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\resample_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\solvers\rmsprop_solver.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\layers\scale_layer.cu">
+      <Filter>Source Files\Layers</Filter>
+    </CudaCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\proto\caffe.pb.h">
+      <Filter>Source Files\proto</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gtest\gtest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\proto\caffe.proto">
+      <Filter>Source Files\proto</Filter>
+    </None>
+  </ItemGroup>
+</Project>
