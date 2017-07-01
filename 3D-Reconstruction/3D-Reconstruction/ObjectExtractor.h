@@ -30,19 +30,22 @@ struct Box
 
     void update(Vec3f point)
     {
+        if (abs(point[2] - (-8.5169495)) < 1e-5)
+            int x = 2;
+
         if (point[0] > maxX[0])
             maxX = point;
-        else if (point[0] < minX[0])
+        if (point[0] < minX[0])
             minX = point;
 
         if (point[1] > maxY[1])
             maxY = point;
-        else if (point[1] < minY[1])
+        if (point[1] < minY[1])
             minY = point;
 
         if (point[2] > maxZ[2])
             maxZ = point;
-        else if (point[2] < maxZ[2])
+        if (point[2] < minZ[2])
             minZ = point;
     }
 };
@@ -52,15 +55,21 @@ class ObjectExtractor
 private:
     int width;
     int height;
+    float fovx;
     float baseline;
     float focalLength;
+    Vec3f leftCameraLocation;
+
     const float INF = 1e10;
     const float THRESHOLD = 0.3f;
+    const int DISPARITY_THRESHOLD = 40;
+    const int OBJECT_SIZE_THRESHOLD = 1500;
 
-    float locationDifference(Vec3f a, Vec3f b);
+    float euclidianDistance(Vec2f a, Vec2f b);
+    float euclidianDistance(Vec3f a, Vec3f b);
     void convertPointsToGlobalOrigin(vector<Mat>& points, Direction direction);
 
-    Mat convertDisparityToXYZ(Mat disparity, Direction currentDirection);
+    Mat convertDisparityToXYZ(Mat& disparity, Direction currentDirection);
 
     Direction getRightDirection(Direction currentDirection);
 
@@ -74,14 +83,28 @@ private:
 
     void segmentImage(vector<Mat>& pointCloud, UnionSet& unionSet);
 
-    vector<Mat> getPointCloud(vector<Mat> disparityVector);
+    vector<Mat> getPointCloud(vector<Mat>& disparityVector);
 
-    vector<Vec2i> boxTo2D(Box box, Direction direction);
+    vector<Box> getBoxesFromPointCloud(vector<Mat>& pointCloud, UnionSet& unionSet);
+
+    vector<Vec2f> getImageBorderIntersections(Vec2i a, Vec2i b);
+
+    Direction pointDirectionInView(Vec3f point);
+
+    Vec3f intersectionWithCameraBorders(Vec3f point1, Vec3f point2, Direction direction);
+
+    vector<Vec3f> ObjectExtractor::boxToVertices(Box box);
+
+    void drawLine(Mat& image, Vec3f a, Vec3f b, Direction direction);
+
+    void drawCuboid(Mat& image, vector<Vec3f>& points, Direction direction);
+
+    void visualizeBoxes(vector<Mat>& disparityVector, vector<Box> boxes);
 
 public:
 
     // The disparity vector has the format Front, Right, Back, Left
-    ObjectExtractor(int width, int height, float baseline, float focalLength);
+    ObjectExtractor(int width, int height, float fovx, float baseline, float focalLength, Vec3f leftCameraLocation);
 
-    vector<Box> getObjects(vector<Mat> disparityVector, bool visualize = false);
+    vector<Box> getObjects(vector<Mat>& disparityVector, bool visualize = false);
 };

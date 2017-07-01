@@ -167,7 +167,7 @@ void UnionSet::visualize()
             }
         }
 
-        imshow(to_string(view), output);
+        imshow("Segmentation " + to_string(view), output);
         waitKey(0);
     }
 }
@@ -175,6 +175,11 @@ void UnionSet::visualize()
 void UnionSet::setBackground(int index)
 {
     this->unionSet(index, backgroundSet);
+}
+
+bool UnionSet::isBackground(int setNumber)
+{
+    return setNumber == backgroundSet;
 }
 
 int UnionSet::getCount(int index)

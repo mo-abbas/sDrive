@@ -68,9 +68,19 @@ int main()
 
     float baseline = 1.0f;
     float focalLength = baseline / 2.0f;
-    ObjectExtractor oe(960, 540, baseline, focalLength);
+    Vec3f cameraLocation(-focalLength, 0, -focalLength);
+    ObjectExtractor oe(960, 540, 90.0, baseline, focalLength, cameraLocation);
 
-    auto a = clock();
-    auto b = oe.getObjects(disparity, true);
-    cout << clock() - a << endl;
+    bool visualize = true;
+
+    if (!visualize)
+    {
+        auto a = clock();
+        oe.getObjects(disparity, visualize);
+        cout << clock() - a << endl;
+    }
+    else
+    {
+        oe.getObjects(disparity, visualize);
+    }
 }

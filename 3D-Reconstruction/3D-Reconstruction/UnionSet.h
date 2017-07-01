@@ -33,6 +33,7 @@ public:
     bool isSameSet(int index1, int index2);
     void unionSet(int index1, int index2);
     void setBackground(int index);
+    bool isBackground(int setNumber);
 
     int getCount(int setNumber);
     void visualize();
