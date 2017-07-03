@@ -345,7 +345,7 @@ Vec3f ObjectExtractor::intersectionWithCameraBorders(Vec3f point1, Vec3f point2,
     * y = y1 + b * t
     * z = z1 + c * t
     * Where a, b anc c are calculated using the difference between the two ends of the line
-    * e.g. a = x1 - x2, b = y1 - y2, c = z1 - z2
+    * e.g. a = x2 - x1, b = y2 - y1, c = z2 - z1
     *
     * The plane equation is represented as A * x + B * y + C * z + D = 0
     * so to solve the equations we find that t = (A * x1 + B * y1 + C * z1 + D) / (A * a + B * b + C * c)
