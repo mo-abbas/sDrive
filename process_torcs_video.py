@@ -52,7 +52,6 @@ class multithreaded_video_processor(threading.Thread):
                 image[0][1] = np.subtract(image[0][1], MEAN_VALUE[1])
                 image[0][2] = np.subtract(image[0][2], MEAN_VALUE[2])
             
-            self.net.blobs['data_r'].data[...] = image
             predictions = self.net.forward(**{"data_r": image})['loss']
 
             predictions = np.squeeze(predictions)[1]
