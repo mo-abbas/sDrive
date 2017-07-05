@@ -152,11 +152,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ObjectExtractor.cpp" />
+    <ClCompile Include="OffRoadClipper.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="UnionSet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ObjectExtractor.h" />
+    <ClInclude Include="OffRoadClipper.h" />
+    <ClInclude Include="PolyFit.h" />
     <ClInclude Include="Road.h" />
     <ClInclude Include="UnionSet.h" />
   </ItemGroup>

@@ -9,29 +9,52 @@
 using namespace cv;
 using namespace std;
 
-class road
+class Road
 {
     int thresh = 100;
     int max_thresh = 255;
 
     struct sortClass {
-        bool operator() (Point i, Point j) { return (i.y>j.y); }
-    } myobject;
+        bool operator() (Point i, Point j) 
+        {
+            if (i.y == j.y)
+                return i.x < j.x;
+            else
+                return i.y > j.y; 
+        }
+    } sortingObject;
 
 public:
-    Mat src; Mat src_gray;
+    Mat src;
     vector<Point> left, right;
+    Point leftPlanB, rightPlanB;
 
-    void getContours()
+    void getContours(Mat image)
     {
-        Mat canny_output;
+        leftPlanB = Point(0, 0);
+        rightPlanB = Point(0, 0);
+
+        src = image;
+        
+        //delete most right and left white pixels
+        for (int i = 0; i < src.rows; i++)
+        {
+            src.at<uchar>(i, 0) = 0;
+            src.at<uchar>(i, src.cols - 1) = 0;
+        }
+
+        //delete most bottom white pixels
+
+        for (int i = 0; i < src.cols; i++)
+        {
+            src.at<uchar>(src.rows - 1, i) = 0;
+        }
+
         vector<vector<Point> > contours;
         vector<Vec4i> hierarchy;
 
-        /// Detect edges using canny
-        Canny(src_gray, canny_output, thresh, thresh * 2, 3);
         /// Find contours
-        findContours(src_gray, contours, hierarchy, CV_RETR_TREE, CHAIN_APPROX_NONE, Point(0, 0));
+        findContours(src, contours, hierarchy, RETR_LIST, CHAIN_APPROX_NONE, Point(0, 0));
 
         //find contour with the max area
         double maxArea = 0;
@@ -45,40 +68,34 @@ public:
                 maxAreaPos = i;
             }
         }
+        
+        vector<Point>& road = contours[maxAreaPos];
+        sort(road.begin(), road.end(), sortingObject);
 
-        sort(contours[maxAreaPos].begin(), contours[maxAreaPos].end(), myobject);
-        int first5 = 0; // contours[maxAreaPos].size() / 10;
-        int highestPointY = contours[maxAreaPos].back().y;
-        for (int i = contours[maxAreaPos].size() - 1; i >= 0 && highestPointY + src.rows / 20 > contours[maxAreaPos][i].y; i--)
+        int firstFivePercent = 0;
+        int highestPointY = road.back().y;
+        for (int i = road.size() - 1; i >= 0 && highestPointY + src.rows / 20 > road[i].y; i--)
         {
-            first5++;
+            firstFivePercent++;
         }
 
-        contours[maxAreaPos].erase(contours[maxAreaPos].end() - first5, contours[maxAreaPos].end());
-        int x = contours[maxAreaPos].size() - 1;
-        line(src, Point(0, contours[maxAreaPos][x].y), Point(src.cols - 1, contours[maxAreaPos][x].y), Scalar(255, 255, 0));
-        //int j = 1;
-        //while (contours[maxAreaPos][x].y == contours[maxAreaPos][x - j].y)
-        //{
-        //    j++;
-        //}
-        //contours[maxAreaPos].erase(contours[maxAreaPos].end() - j, contours[maxAreaPos].end());
+        road.erase(road.end() - firstFivePercent, road.end());
+        line(src, Point(0, road.back().y), Point(src.cols - 1, road.back().y), Scalar(255, 255, 0));
 
-        //x -= j;
-        //j = 1;
-        int avgMinVal = 0, avgMaxVal = 0;
-        int count = 0;
-        highestPointY = contours[maxAreaPos].back().y;
-        for (int i = contours[maxAreaPos].size() - 1, j = 0; i >= 0 && highestPointY + src.rows / 20 > contours[maxAreaPos][i].y; i--)
+        highestPointY = road.back().y;
+        vector<int> minVector(src.rows);
+        vector<int> maxVector(src.rows);
+
+        for (int i = road.size() - 1, j = 0; i >= 0; i--)
         {
             j = 0;
             int minVal = 15000, maxVal = -1;
-            while (i - j >= 0 && contours[maxAreaPos][i].y == contours[maxAreaPos][i - j].y)
+            while (i - j >= 0 && road[i].y == road[i - j].y)
             {
-                if (contours[maxAreaPos][i - j].x < minVal)
-                    minVal = contours[maxAreaPos][i - j].x;
-                if (contours[maxAreaPos][i - j].x > maxVal)
-                    maxVal = contours[maxAreaPos][i - j].x;
+                if (road[i - j].x < minVal)
+                    minVal = road[i - j].x;
+                if (road[i - j].x > maxVal)
+                    maxVal = road[i - j].x;
                 j++;
             }
 
@@ -87,74 +104,34 @@ public:
             if (j != 0)
                 i++;
 
-            count++;
-            avgMinVal += minVal;
-            avgMaxVal += maxVal;
+            minVector[road[i].y] = minVal;
+            maxVector[road[i].y] = maxVal;
         }
 
-        int minVal = avgMinVal / count, maxVal = avgMaxVal / count;
-        line(src, Point(minVal, 0), Point(minVal, src.rows - 1), Scalar(0, 255, 0));
-        line(src, Point(maxVal, 0), Point(maxVal, src.rows - 1), Scalar(0, 0, 255));
-        vector<Point> uniqueCont;
-
-        vector<vector<bool>> check(src.cols, vector<bool>(src.rows, false));
-        for (int i = 0; i < contours[maxAreaPos].size(); i++)
+        for (int i = 0; i < road.size(); i++)
         {
-            bool point = check[contours[maxAreaPos][i].x][contours[maxAreaPos][i].y];
-            if (!point)
+            if (road[i].x < 5 && road[i].y > leftPlanB.y)
             {
-                uniqueCont.push_back(Point(contours[maxAreaPos][i].x, contours[maxAreaPos][i].y));
-                check[contours[maxAreaPos][i].x][contours[maxAreaPos][i].y] = true;
+                leftPlanB = road[i];
+            }
+
+            // skip duplicate points
+            while (i < road.size() - 1 && road[i] == road[i + 1]) i++;
+
+            if (road[i].x > src.cols - 5 && road[i].y > rightPlanB.y)
+            {
+                rightPlanB = road[i];
+            }
+
+            Point point = road[i];
+            if (point.x <= minVector[point.y] && point.x > 10 && point.x < src.cols - 10)
+            {
+                left.push_back(point);
+            }
+            else if (point.x >= maxVector[point.y] && point.x > 10 && point.x < src.cols - 10)
+            {
+                right.push_back(point);
             }
         }
-
-        for (int i = 0; i < uniqueCont.size(); i++)
-        {
-            if (uniqueCont[i].x < minVal && uniqueCont[i].x > 10 && uniqueCont[i].x < src.cols - 10)
-            {
-                left.push_back(uniqueCont[i]);
-            }
-            else if (uniqueCont[i].x > maxVal && uniqueCont[i].x > 10 && uniqueCont[i].x < src.cols - 10)
-            {
-                right.push_back(uniqueCont[i]);
-            }
-        }
-    }
-
-    road(string imageName)
-    {
-        src = imread(imageName, 1);
-
-        /// Convert image to gray and blur it
-        cvtColor(src, src_gray, CV_BGR2GRAY);
-       // blur(src_gray, src_gray, Size(3, 3));
-
-        //delete most right and left white pixels
-        for (int i = 0; i < src.rows; i++)
-        {
-            Scalar intensty = src_gray.at<uchar>(i, 0);
-            Scalar intensty2 = src_gray.at<uchar>(i, src.cols - 1);
-            if (intensty.val[0] != 0)
-            {
-                src_gray.at<uchar>(i, 0) = 0;
-            }
-            if (intensty2.val[0] != 0)
-            {
-                src_gray.at<uchar>(i, src.cols - 1) = 0;
-            }
-        }
-
-        //delete most bottom white pixels
-
-        for (int i = 0; i < src.cols; i++)
-        {
-            Scalar intensty = src_gray.at<uchar>(src.rows - 1, i);
-            if (intensty.val[0] != 0)
-            {
-                src_gray.at<uchar>(src.rows - 1, i) = 0;
-            }
-        }
-
-        getContours();
     }
 };

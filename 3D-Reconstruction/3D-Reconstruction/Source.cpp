@@ -48,20 +48,20 @@ int main()
     string d[] = { "00008_front.png", "00008_right.png", "00008_back.png", "00008_left.png" };
     string r[] = { "00008_front_road.png", "00008_right_road.png", "00008_back_road.png", "00008_left_road.png" };
 
-    vector<Mat> disparity;
+    vector<Mat> disparityVector;
+    vector<Mat> roadVector;
+
     for (int i = 0; i < 4; i++)
     {
         Mat disp = imread(d[i], -1);
         Mat road = imread(r[i], -1);
 
-        road = 255 - road;  //invert road
-        bitwise_and(disp, road, disp);
-        //threshold(disp, disp, 0, 255, CV_THRESH_TOZERO);
         disp.convertTo(disp, CV_32F);
 
-        disparity.push_back(disp);
-        //imshow(to_string(i), disp);
-        //waitKey(0);
+        if (i % 2 == 0)
+            roadVector.push_back(road);
+
+        disparityVector.push_back(disp);
     }
 
     //return 0;
@@ -76,11 +76,11 @@ int main()
     if (!visualize)
     {
         auto a = clock();
-        oe.getObjects(disparity, visualize);
+        oe.getObjects(disparityVector, roadVector, visualize);
         cout << clock() - a << endl;
     }
     else
     {
-        oe.getObjects(disparity, visualize);
+        oe.getObjects(disparityVector, roadVector, visualize);
     }
 }

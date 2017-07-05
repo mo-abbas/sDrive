@@ -1,4 +1,5 @@
 #include "ObjectExtractor.h"
+#include "OffRoadClipper.h"
 #include <iostream>
 #include <math.h>
 
@@ -456,7 +457,7 @@ void ObjectExtractor::visualizeBoxes(vector<Mat>& disparityVector, vector<Box> b
     }
 }
 
-vector<Box> ObjectExtractor::getBoxesFromPointCloud(vector<Mat>& pointCloud, UnionSet& unionSet)
+vector<Box> ObjectExtractor::getBoxesFromPointCloud(vector<Mat>& pointCloud, UnionSet& unionSet, float heightThreshold)
 {
     map<int, Box> setToBoxMap;
 
@@ -477,23 +478,33 @@ vector<Box> ObjectExtractor::getBoxesFromPointCloud(vector<Mat>& pointCloud, Uni
         }
     }
 
-    vector<Box> result(setToBoxMap.size());
+    vector<Box> result;
+    result.reserve(setToBoxMap.size());
+
     auto j = setToBoxMap.begin();
     for (int i = 0; j != setToBoxMap.end(); ++j, ++i)
     {
-        result[i] = j->second;
+        if (j->second.maxY[1] >= heightThreshold)
+        {
+            result.push_back(j->second);
+        }
     }
 
     return result;
 }
 
-vector<Box> ObjectExtractor::getObjects(vector<Mat>& disparityVector, bool visualize)
+vector<Box> ObjectExtractor::getObjects(vector<Mat>& disparityVector, vector<Mat>& roadVector, bool visualize)
 {
     vector<Mat> pointCloud = getPointCloud(disparityVector);
+    OffRoadClipper clipper(roadVector, pointCloud);
+
+    float averageRoadHeight = clipper.clip();
+    float heightThreshold = averageRoadHeight + 1.0;
+
     UnionSet unionSet((int)pointCloud.size(), pointCloud[0].cols, pointCloud[0].rows);
     segmentImage(pointCloud, unionSet);
 
-    vector<Box> boxes = getBoxesFromPointCloud(pointCloud, unionSet);
+    vector<Box> boxes = getBoxesFromPointCloud(pointCloud, unionSet, heightThreshold);
 
     if (visualize)
     {

@@ -62,7 +62,7 @@ private:
 
     const float INF = 1e10;
     const float THRESHOLD = 0.3f;
-    const int DISPARITY_THRESHOLD = 40;
+    const int DISPARITY_THRESHOLD = 10;
     const int OBJECT_SIZE_THRESHOLD = 1500;
 
     float euclidianDistance(Vec2f a, Vec2f b);
@@ -85,7 +85,7 @@ private:
 
     vector<Mat> getPointCloud(vector<Mat>& disparityVector);
 
-    vector<Box> getBoxesFromPointCloud(vector<Mat>& pointCloud, UnionSet& unionSet);
+    vector<Box> getBoxesFromPointCloud(vector<Mat>& pointCloud, UnionSet& unionSet, float heightThreshold);
 
     vector<Vec2f> getImageBorderIntersections(Vec2i a, Vec2i b);
 
@@ -106,5 +106,5 @@ public:
     // The disparity vector has the format Front, Right, Back, Left
     ObjectExtractor(int width, int height, float fovx, float baseline, float focalLength, Vec3f leftCameraLocation);
 
-    vector<Box> getObjects(vector<Mat>& disparityVector, bool visualize = false);
+    vector<Box> getObjects(vector<Mat>& disparityVector, vector<Mat>& roadVector, bool visualize = false);
 };
