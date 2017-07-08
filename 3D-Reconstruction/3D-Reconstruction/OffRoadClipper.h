@@ -8,21 +8,28 @@ using namespace std;
 
 class OffRoadClipper
 {
-    vector<Mat> road;
+    vector<Road> road;
     vector<Mat> pointCloud;
 
-    int sign(float value);
-    float averageRoadHeight();
-    pair<Mat, Mat> getRoadBorders();
-    pair<Mat, Mat> getWorldPoints(Road& roadDetector, Direction direction);
-    int getInRoadDirection(Mat& polyCoefficients, Direction direction);
-    bool pointIsInDirection(Vec3f point, Mat& polyCoefficients, int direction);
-    float eucliedianDistance(Vec3f point);
+    const float DISTANCE_THRESHOLD = 20.f;
+    const float ROAD_HEIGHT_THRESHOLD = 0.3f;
+
+    int Sign(float value);
+
+    float AverageRoadHeight();
+
+    pair<Mat, Mat> GetRoadBorders();
+    pair<Mat, Mat> GetWorldPoints(Road& roadDetector, Direction direction);
+
+    int GetInRoadDirection(Mat& polyCoefficients, Direction direction);
+    bool PointIsInDirection(Vec3f point, Mat& polyCoefficients, int direction);
+    
+    float EucliedianDistance(Vec3f point);
 
 public:
     Mat leftCoefficients, rightCoefficients;
 
-    OffRoadClipper(vector<Mat> road, vector<Mat> pointCloud);
-    float evaluatePolynomial(float x, Mat& polyCoefficients);
-    float clip();
+    OffRoadClipper(vector<Road>& road, vector<Mat>& pointCloud);
+    float EvaluatePolynomial(float x, Mat& polyCoefficients);
+    float Clip();
 };

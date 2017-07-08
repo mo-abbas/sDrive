@@ -1,20 +1,20 @@
 #pragma once
 
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <opencv2/core/core.hpp>
 
 using namespace cv;
 using namespace std;
 
+enum Direction;
+
 class Road
 {
-    int thresh = 100;
-    int max_thresh = 255;
+    Direction direction;
 
-    struct sortClass {
+    struct FrontAndBackSorting {
         bool operator() (Point i, Point j) 
         {
             if (i.y == j.y)
@@ -22,116 +22,31 @@ class Road
             else
                 return i.y > j.y; 
         }
-    } sortingObject;
+    } frontAndBackSortingObject;
+
+    struct SidesSorting {
+        bool operator() (Point i, Point j)
+        {
+            if (i.x == j.x)
+                return i.y < j.y;
+            else
+                return i.x > j.x;
+        }
+    } sidesSortingObject;
+
+    vector<Point> getContour();
+    void calculateSidesBorders();
+    void calculateFrontOrBackBorders();
 
 public:
-    Mat src;
+    Mat road;
     vector<Point> left, right;
-    Point leftPlanB, rightPlanB;
 
-    void getContours(Mat image)
+    Road(Mat road, Direction direction);
+
+    template <class T>
+    T at(int row, int col)
     {
-        leftPlanB = Point(0, 0);
-        rightPlanB = Point(0, 0);
-
-        src = image;
-        
-        //delete most right and left white pixels
-        for (int i = 0; i < src.rows; i++)
-        {
-            src.at<uchar>(i, 0) = 0;
-            src.at<uchar>(i, src.cols - 1) = 0;
-        }
-
-        //delete most bottom white pixels
-
-        for (int i = 0; i < src.cols; i++)
-        {
-            src.at<uchar>(src.rows - 1, i) = 0;
-        }
-
-        vector<vector<Point> > contours;
-        vector<Vec4i> hierarchy;
-
-        /// Find contours
-        findContours(src, contours, hierarchy, RETR_LIST, CHAIN_APPROX_NONE, Point(0, 0));
-
-        //find contour with the max area
-        double maxArea = 0;
-        int maxAreaPos = 0;
-        for (int i = 0; i < contours.size(); i++)
-        {
-            double area = contourArea(contours[i]);
-            if (area > maxArea)
-            {
-                maxArea = area;
-                maxAreaPos = i;
-            }
-        }
-        
-        vector<Point>& road = contours[maxAreaPos];
-        sort(road.begin(), road.end(), sortingObject);
-
-        int firstFivePercent = 0;
-        int highestPointY = road.back().y;
-        for (int i = road.size() - 1; i >= 0 && highestPointY + src.rows / 20 > road[i].y; i--)
-        {
-            firstFivePercent++;
-        }
-
-        road.erase(road.end() - firstFivePercent, road.end());
-        line(src, Point(0, road.back().y), Point(src.cols - 1, road.back().y), Scalar(255, 255, 0));
-
-        highestPointY = road.back().y;
-        vector<int> minVector(src.rows);
-        vector<int> maxVector(src.rows);
-
-        for (int i = road.size() - 1, j = 0; i >= 0; i--)
-        {
-            j = 0;
-            int minVal = 15000, maxVal = -1;
-            while (i - j >= 0 && road[i].y == road[i - j].y)
-            {
-                if (road[i - j].x < minVal)
-                    minVal = road[i - j].x;
-                if (road[i - j].x > maxVal)
-                    maxVal = road[i - j].x;
-                j++;
-            }
-
-            i -= j;
-
-            if (j != 0)
-                i++;
-
-            minVector[road[i].y] = minVal;
-            maxVector[road[i].y] = maxVal;
-        }
-
-        for (int i = 0; i < road.size(); i++)
-        {
-            if (road[i].x < 5 && road[i].y > leftPlanB.y)
-            {
-                leftPlanB = road[i];
-            }
-
-            // skip duplicate points
-            while (i < road.size() - 1 && road[i] == road[i + 1]) i++;
-
-            if (road[i].x > src.cols - 5 && road[i].y > rightPlanB.y)
-            {
-                rightPlanB = road[i];
-            }
-
-            Point point = road[i];
-            if (point.x <= minVector[point.y] && point.x > 10 && point.x < src.cols - 10)
-            {
-                left.push_back(point);
-            }
-            else if (point.x >= maxVector[point.y] && point.x > 10 && point.x < src.cols - 10)
-            {
-                right.push_back(point);
-            }
-        }
+        return road.at<T>(row, col);
     }
 };

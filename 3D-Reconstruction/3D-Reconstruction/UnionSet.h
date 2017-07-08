@@ -20,21 +20,21 @@ private:
     int height;
     int backgroundSet;
 
-    int getRank(int index);
-    void setRank(int index, int rank);
-    void setParent(int index, int setNumber);
+    int GetRank(int index);
+    void SetRank(int index, int rank);
+    void SetParent(int index, int setNumber);
 
 public:
     UnionSet(int images, int width, int height);
 
-    int findSet(int index);
-    int findSet(int image, int row, int col);
+    int FindSet(int index);
+    int FindSet(int image, int row, int col);
 
-    bool isSameSet(int index1, int index2);
-    void unionSet(int index1, int index2);
-    void setBackground(int index);
-    bool isBackground(int setNumber);
+    bool IsSameSet(int index1, int index2);
+    void UnionSets(int index1, int index2);
+    void SetAsBackground(int index);
+    bool IsBackground(int setNumber);
 
-    int getCount(int setNumber);
-    void visualize();
+    int GetCount(int setNumber);
+    vector<Mat> Visualize();
 };

@@ -151,14 +151,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Box.cpp" />
     <ClCompile Include="ObjectExtractor.cpp" />
     <ClCompile Include="OffRoadClipper.cpp" />
+    <ClCompile Include="PointCloud.cpp" />
+    <ClCompile Include="Road.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="UnionSet.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Box.h" />
     <ClInclude Include="ObjectExtractor.h" />
     <ClInclude Include="OffRoadClipper.h" />
+    <ClInclude Include="PointCloud.h" />
     <ClInclude Include="PolyFit.h" />
     <ClInclude Include="Road.h" />
     <ClInclude Include="UnionSet.h" />

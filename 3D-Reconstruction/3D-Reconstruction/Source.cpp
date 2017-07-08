@@ -49,38 +49,62 @@ int main()
     string r[] = { "00008_front_road.png", "00008_right_road.png", "00008_back_road.png", "00008_left_road.png" };
 
     vector<Mat> disparityVector;
-    vector<Mat> roadVector;
+    vector<Road> roadVector;
 
-    for (int i = 0; i < 4; i++)
+    bool single = false;
+
+    if (single)
     {
-        Mat disp = imread(d[i], -1);
-        Mat road = imread(r[i], -1);
+        Mat disp = imread(d[0], -1);
+        Mat road = imread(r[0], -1);
 
         disp.convertTo(disp, CV_32F);
 
-        if (i % 2 == 0)
-            roadVector.push_back(road);
-
+        roadVector.push_back(Road(road, FRONT));
         disparityVector.push_back(disp);
-    }
-
-    //return 0;
-
-    float baseline = 1.0f;
-    float focalLength = baseline / 2.0f;
-    Vec3f cameraLocation(-focalLength, 0, -focalLength);
-    ObjectExtractor oe(960, 540, 90.0, baseline, focalLength, cameraLocation);
-
-    bool visualize = true;
-
-    if (!visualize)
-    {
-        auto a = clock();
-        oe.getObjects(disparityVector, roadVector, visualize);
-        cout << clock() - a << endl;
     }
     else
     {
-        oe.getObjects(disparityVector, roadVector, visualize);
+        for (int i = 0; i < 4; i++)
+        {
+            Mat disp = imread(d[i], -1);
+            Mat road = imread(r[i], -1);
+
+            disp.convertTo(disp, CV_32F);
+
+            disparityVector.push_back(disp);
+            roadVector.push_back(Road(road, (Direction)i));
+        }
     }
+
+    // kitti pixel size is 4.65 * 10^-6
+    // kitti focal length is 4 * 10-4
+    // kitti FOV is 90 degrees
+    // kitti baseline is 0.54m
+    // kitti resolution is typically 1248x384
+
+    float fovx = 90.f;
+    float baseline = 1.f;
+    float pixelSize = 1.f;
+    float focalLength = baseline / 2.0f;
+    Vec3f cameraLocation(-focalLength, 0, -focalLength);
+
+    PointCloud pointCloud(disparityVector, fovx, baseline, focalLength, pixelSize, cameraLocation);
+    pointCloud.ClipExtraPoints(roadVector);
+
+    ObjectExtractor oe(pointCloud);
+    vector<Mat> boxes = oe.VisualizeBoxes();
+    vector<Mat> segments = oe.VisualizeSegmentation();
+
+    for (int i = 0; i < boxes.size(); i++)
+    {
+        imshow("boxes " + to_string(i), boxes[i]);
+    }
+
+    for (int i = 0; i < boxes.size(); i++)
+    {
+        imshow("segments " + to_string(i), segments[i]);
+    }
+
+    waitKey(0);
 }

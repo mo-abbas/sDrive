@@ -2,7 +2,7 @@
 #include <iostream>
 #include <ctime>
 
-int UnionSet::getRank(int index)
+int UnionSet::GetRank(int index)
 {
     int image = index / (height * width);
     int row = (index % (height * width)) / width;
@@ -11,7 +11,16 @@ int UnionSet::getRank(int index)
     return rank[image].at<int>(row, col);
 }
 
-void UnionSet::setParent(int index, int setNumber)
+void UnionSet::SetRank(int index, int rank)
+{
+    int image = index / (height * width);
+    int row = (index % (height * width)) / width;
+    int col = (index % (height * width)) % width;
+
+    this->rank[image].at<int>(row, col) = rank;
+}
+
+void UnionSet::SetParent(int index, int setNumber)
 {
     int image = index / (height * width);
     int row = (index % (height * width)) / width;
@@ -24,15 +33,6 @@ void UnionSet::setParent(int index, int setNumber)
     parent[image].at<int>(row, col) = setNumber;
     count[setImage].at<int>(setRow, setCol) += count[image].at<int>(row, col);
     count[image].at<int>(row, col) = 0;
-}
-
-void UnionSet::setRank(int index, int rank)
-{
-    int image = index / (height * width);
-    int row = (index % (height * width)) / width;
-    int col = (index % (height * width)) % width;
-
-    this->rank[image].at<int>(row, col) = rank;
 }
 
 UnionSet::UnionSet(int images, int width, int height)
@@ -68,7 +68,7 @@ UnionSet::UnionSet(int images, int width, int height)
     this->height = height;
 }
 
-int UnionSet::findSet(int index)
+int UnionSet::FindSet(int index)
 {
     int image = index / (height * width);
     int row = (index % (height * width)) / width;
@@ -76,60 +76,79 @@ int UnionSet::findSet(int index)
 
     int& value = parent[image].at<int>(row, col);
 
-    return (value == index) ? index : (value = findSet(value));
+    return (value == index) ? index : (value = FindSet(value));
 }
 
-int UnionSet::findSet(int image, int row, int col)
+int UnionSet::FindSet(int image, int row, int col)
 {
-    return findSet(image * (height * width) + row * width + col);
+    return FindSet(image * (height * width) + row * width + col);
 }
 
-bool UnionSet::isSameSet(int index1, int index2)
+bool UnionSet::IsSameSet(int index1, int index2)
 {
-    return findSet(index1) == findSet(index2);
+    return FindSet(index1) == FindSet(index2);
 }
 
-void UnionSet::unionSet(int index1, int index2)
+void UnionSet::UnionSets(int index1, int index2)
 {
-    if (!isSameSet(index1, index2))
+    if (!IsSameSet(index1, index2))
     {
-        int parent1 = findSet(index1);
-        int parent2 = findSet(index2);
+        int parent1 = FindSet(index1);
+        int parent2 = FindSet(index2);
 
-        int rank1 = getRank(parent1);
-        int rank2 = getRank(parent2);
+        int rank1 = GetRank(parent1);
+        int rank2 = GetRank(parent2);
 
         if (rank1 > rank2)
         {
-            setParent(parent2, parent1);
+            SetParent(parent2, parent1);
         }
         else if (rank2 > rank1)
         {
-            setParent(parent1, parent2);
+            SetParent(parent1, parent2);
         }
         else
         {
-            setRank(parent2, rank2 + 1);
-            setParent(parent1, parent2);
+            SetRank(parent2, rank2 + 1);
+            SetParent(parent1, parent2);
         }
     }
 }
 
-void UnionSet::visualize()
+void UnionSet::SetAsBackground(int index)
+{
+    this->UnionSets(index, backgroundSet);
+}
+
+bool UnionSet::IsBackground(int setNumber)
+{
+    return setNumber == backgroundSet;
+}
+
+int UnionSet::GetCount(int index)
+{
+    int image = index / (height * width);
+    int row = (index % (height * width)) / width;
+    int col = (index % (height * width)) % width;
+
+    return count[image].at<int>(row, col);
+}
+
+vector<Mat> UnionSet::Visualize()
 {
     map<int, int> mymap;
+    vector<Mat> output(parent.size() - 1);
+
     int colorNumber = 0;
 
-    auto a = clock();
-
-    for (int view = 0; view < 4; view++)
+    for (int view = 0; view < parent.size() - 1; view++)
     {
         for (int i = 0; i < height; i++)
         {
             for (int j = 0; j < width; j++)
             {
                 int index = view * width * height + i * width + j;
-                int setNumber = findSet(index);
+                int setNumber = FindSet(index);
 
                 if (mymap.find(setNumber) == mymap.end())
                 {
@@ -146,47 +165,27 @@ void UnionSet::visualize()
         }
     }
     
-    int maxColor = 16777216;
+    int maxColor = (1 << 8) * (1 << 8) * (1 << 8);
 
-    for (int view = 0; view < 4; view++)
+    for (int view = 0; view < parent.size() - 1; view++)
     {
-        Mat output(height, width, CV_8UC3);
+        output[view] = Mat(height, width, CV_8UC3);
 
         for (int i = 0; i < height; i++)
         {
             for (int j = 0; j < width; j++)
             {
                 int index = view * width * height + i * width + j;
-                int setNumber = findSet(index);
+                int setNumber = FindSet(index);
 
-                Vec3b& pixel = output.at<Vec3b>(i, j);
+                Vec3b& pixel = output[view].at<Vec3b>(i, j);
                 int value = int((mymap[setNumber] * 1.f / mymap.size()) * maxColor);
                 pixel[0] = value & 0xFF;
                 pixel[1] = (value >> 8) & 0xFF;
                 pixel[2] = value >> 16;
             }
         }
-
-        imshow("Segmentation " + to_string(view), output);
-        waitKey(0);
     }
-}
 
-void UnionSet::setBackground(int index)
-{
-    this->unionSet(index, backgroundSet);
-}
-
-bool UnionSet::isBackground(int setNumber)
-{
-    return setNumber == backgroundSet;
-}
-
-int UnionSet::getCount(int index)
-{
-    int image = index / (height * width);
-    int row = (index % (height * width)) / width;
-    int col = (index % (height * width)) % width;
-
-    return count[image].at<int>(row, col);
+    return output;
 }

@@ -51,7 +51,7 @@
 using namespace std;
 using namespace cv;
 
-void polyfit(const Mat& src_x, const Mat& src_y, Mat& dst, int order)
+void Polyfit(const Mat& src_x, const Mat& src_y, Mat& dst, int order)
 {
     CV_Assert((src_x.rows>0) && (src_y.rows>0) && (src_x.cols == 1) && (src_y.cols == 1) && (order >= 1));
     Mat X;
