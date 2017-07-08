@@ -93,6 +93,17 @@ int main()
     pointCloud.ClipExtraPoints(roadVector);
 
     ObjectExtractor oe(pointCloud);
+
+    // center[0] is the X-axis and center[1] is the Z-axis (the axis going into the screen)
+    vector<Vec2f> carsCenter = oe.GetCars();
+
+    // coeff[0] = coeff(x^0)
+    // coeff[1] = coeff(x)
+    // coeff[2] = coeff(x^2)
+    // ...
+    // currently we use the first two only
+    pair<Mat, Mat> roadCoefficients = oe.GetRoadBorders();
+
     vector<Mat> boxes = oe.VisualizeBoxes();
     vector<Mat> segments = oe.VisualizeSegmentation();
 
