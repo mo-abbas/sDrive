@@ -1,4 +1,5 @@
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 #include "Road.h"
 #include "PointCloud.h"
@@ -75,7 +76,7 @@ void Road::calculateSidesBorders()
         if (j != 0)
             i++;
 
-        minVector[contour[i].y] = minVal;
+        minVector[contour[i].x] = minVal;
     }
 
     vector<Point>& border = direction == LEFT ? left : right;
