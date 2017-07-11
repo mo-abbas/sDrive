@@ -28,6 +28,12 @@ vector<Point> Road::getContour()
     /// Find contours
     findContours(image, contours, hierarchy, RETR_LIST, CHAIN_APPROX_NONE, Point(0, 0));
 
+    // No contours found
+    if (contours.size() == 0)
+    {
+        return vector<Point>();
+    }
+
     //find contour with the max area
     double maxArea = 0;
     int maxAreaPos = 0;
