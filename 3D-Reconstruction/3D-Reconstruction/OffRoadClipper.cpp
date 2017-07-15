@@ -64,7 +64,7 @@ pair<Mat, Mat> OffRoadClipper::GetRoadBorders()
     else
     {
         // We consider the dependent value is the X-axis and the independent is the Z-axis
-        Polyfit(leftPoints.col(1), leftPoints.col(0), leftCoefficients, 1);
+        Polyfit(leftPoints.col(1), leftPoints.col(0), leftCoefficients, 0);
     }
 
     if (rightPoints.rows < 5)
@@ -76,7 +76,7 @@ pair<Mat, Mat> OffRoadClipper::GetRoadBorders()
     else
     {
         // We consider the dependent value is the X-axis and the independent is the Z-axis
-        Polyfit(rightPoints.col(1), rightPoints.col(0), rightCoefficients, 1);
+        Polyfit(rightPoints.col(1), rightPoints.col(0), rightCoefficients, 0);
     }
 
 

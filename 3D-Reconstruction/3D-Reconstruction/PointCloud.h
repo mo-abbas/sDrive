@@ -25,7 +25,7 @@ private:
     float baseline;
     float pixelSize;
     float focalLength;
-    
+
     float averageRoadHeight;
 
     vector<Mat> pointCloud;

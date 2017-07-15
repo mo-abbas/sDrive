@@ -47,11 +47,17 @@ int main()
 {
     string d[] = { "00008_front.png", "00008_right.png", "00008_back.png", "00008_left.png" };
     string r[] = { "00008_front_road.png", "00008_right_road.png", "00008_back_road.png", "00008_left_road.png" };
+    float baseline = 1.f;
+    bool single = false;
+
+    //string d[] = { "a.png" };
+    //string r[] = { "a_road.png" };
+    //float baseline = 0.54f;
+    //bool single = true;
 
     vector<Mat> disparityVector;
     vector<Road> roadVector;
 
-    bool single = false;
 
     if (single)
     {
@@ -77,17 +83,16 @@ int main()
         }
     }
 
-    // kitti pixel size is 4.65 * 10^-6
-    // kitti focal length is 4 * 10-4
-    // kitti FOV is 90 degrees
-    // kitti baseline is 0.54m
-    // kitti resolution is typically 1248x384
+    //float fovx = 90.f;
+    //float baseline = 1.f;
+    //float pixelSize = 1.f;
+    //float focalLength = disparityVector[0].cols / 2;
+    //Vec3f cameraLocation(-focalLength, 0, -focalLength);
 
-    float fovx = 90.f;
-    float baseline = 1.f;
-    float pixelSize = 1.f;
-    float focalLength = baseline / 2.0f;
-    Vec3f cameraLocation(-focalLength, 0, -focalLength);
+    float fovx = 90;
+    float pixelSize = 1;
+    float focalLength = disparityVector[0].cols / 2;
+    Vec3f cameraLocation(-baseline / 2, 0, -baseline / 2);
 
     PointCloud pointCloud(disparityVector, fovx, baseline, focalLength, pixelSize, cameraLocation);
     pointCloud.ClipExtraPoints(roadVector);

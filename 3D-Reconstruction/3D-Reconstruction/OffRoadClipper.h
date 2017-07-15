@@ -11,7 +11,7 @@ class OffRoadClipper
     vector<Road> road;
     vector<Mat> pointCloud;
 
-    const float DISTANCE_THRESHOLD = 20.f;
+    const float DISTANCE_THRESHOLD = 25.f;
     const float ROAD_HEIGHT_THRESHOLD = 0.3f;
 
     int Sign(float value);
