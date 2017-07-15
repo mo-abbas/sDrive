@@ -95,7 +95,11 @@ int main()
     Vec3f cameraLocation(-baseline / 2, 0, -baseline / 2);
 
     PointCloud pointCloud(disparityVector, fovx, baseline, focalLength, pixelSize, cameraLocation);
-    pointCloud.ClipExtraPoints(roadVector);
+    OffRoadClipper clipper(roadVector, pointCloud);
+    clipper.Clip();
+
+    clipper.AdjustFromPrevious(clipper.leftCoefficients, clipper.rightCoefficients);
+    pointCloud.GetValuesFromClipper(clipper);
 
     ObjectExtractor oe(pointCloud);
 

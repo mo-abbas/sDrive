@@ -1,4 +1,5 @@
 #include "PointCloud.h"
+#include "PointCloud.h"
 #include "OffRoadClipper.h"
 
 Mat PointCloud::ConvertDisparityToXYZ(Mat& disparity, Direction currentDirection)
@@ -223,10 +224,9 @@ pair<Mat, Mat> PointCloud::GetRoadBorders()
     return make_pair(leftRoadCoefficients, rightRoadCoefficients);
 }
 
-void PointCloud::ClipExtraPoints(vector<Road>& roadVector)
+void PointCloud::GetValuesFromClipper(OffRoadClipper clipper)
 {
-    OffRoadClipper clipper(roadVector, pointCloud);
-    averageRoadHeight = clipper.Clip();
+    averageRoadHeight = clipper.roadAverageHeight;
 
     leftRoadCoefficients = clipper.leftCoefficients;
     rightRoadCoefficients = clipper.rightCoefficients;

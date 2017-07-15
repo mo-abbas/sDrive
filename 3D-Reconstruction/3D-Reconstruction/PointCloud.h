@@ -2,6 +2,7 @@
 
 #include <opencv2/core/core.hpp>
 #include "Road.h"
+#include "OffRoadClipper.h"
 
 using namespace cv;
 using namespace std;
@@ -15,6 +16,8 @@ enum Direction
     BACK = 2,
     LEFT = 3
 };
+
+class OffRoadClipper;
 
 class PointCloud
 {
@@ -54,7 +57,7 @@ public:
     float GetAverageRoadHeight();
     pair<Mat, Mat> GetRoadBorders();
 
-    void ClipExtraPoints(vector<Road>& roadVector);
+    void GetValuesFromClipper(OffRoadClipper clipper);
 
     Mat operator[] (int i)
     {
