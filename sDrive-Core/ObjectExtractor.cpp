@@ -236,7 +236,7 @@ void ObjectExtractor::GetBoxesFromPointCloud()
     auto j = setToBoxMap.begin();
     for (int i = 0; j != setToBoxMap.end(); ++j, ++i)
     {
-        if (j->second.maxY >= heightThreshold)
+        if (j->second.maxY >= heightThreshold && j->second.minY <= heightThreshold)
         {
             j->second.Adjust();
             result.push_back(j->second);

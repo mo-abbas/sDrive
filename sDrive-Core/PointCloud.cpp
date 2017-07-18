@@ -1,4 +1,5 @@
 #include "PointCloud.h"
+#include "PointCloud.h"
 #include "OffRoadClipper.h"
 
 Mat PointCloud::ConvertDisparityToXYZ(Mat& disparity, Direction currentDirection)
@@ -8,7 +9,7 @@ Mat PointCloud::ConvertDisparityToXYZ(Mat& disparity, Direction currentDirection
 
     Mat X(height, width, CV_32F);
     Mat Y(height, width, CV_32F);
-    Mat Z = width * focalLength / (pixelSize * disparity);
+    Mat Z = focalLength * baseline / disparity;
 
     for (int i = 0; i < height; i++)
     {
@@ -23,8 +24,8 @@ Mat PointCloud::ConvertDisparityToXYZ(Mat& disparity, Direction currentDirection
             }
             else
             {
-                X.at<float>(i, j) = (j * 1.f / width - 0.5f) * Z.at<float>(i, j) / focalLength;
-                Y.at<float>(i, j) = (0.5f - i * 1.f / height) * Z.at<float>(i, j) / focalLength;
+                X.at<float>(i, j) = (j - width / 2.f) * baseline / disparity.at<float>(i, j);
+                Y.at<float>(i, j) = (height / 2.f - i) * baseline / disparity.at<float>(i, j);
             }
         }
     }
@@ -99,8 +100,9 @@ PointCloud::PointCloud(vector<Mat>& disparityVector, float fovx, float baseline,
 
 Vec2i PointCloud::ProjectPointTo2D(Vec3f point)
 {
-    int x = int((point[0] * focalLength / point[2] + 0.5f) * width);
-    int y = int((0.5f - point[1] * focalLength / point[2]) * height);
+
+    int x = int(point[0] * (focalLength / pixelSize) / point[2] + width / 2.f);
+    int y = int(height / 2.f - point[1] * (focalLength / pixelSize) / point[2]);
 
     Vec2i result;
     result[0] = x;
@@ -222,10 +224,9 @@ pair<Mat, Mat> PointCloud::GetRoadBorders()
     return make_pair(leftRoadCoefficients, rightRoadCoefficients);
 }
 
-void PointCloud::ClipExtraPoints(vector<Road>& roadVector)
+void PointCloud::GetValuesFromClipper(OffRoadClipper clipper)
 {
-    OffRoadClipper clipper(roadVector, pointCloud);
-    averageRoadHeight = clipper.Clip();
+    averageRoadHeight = clipper.roadAverageHeight;
 
     leftRoadCoefficients = clipper.leftCoefficients;
     rightRoadCoefficients = clipper.rightCoefficients;

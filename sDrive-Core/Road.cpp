@@ -25,11 +25,14 @@ vector<Point> Road::getContour()
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
 
-    // Find contours
+    /// Find contours
     findContours(image, contours, hierarchy, RETR_LIST, CHAIN_APPROX_NONE, Point(0, 0));
 
-	if (contours.size() == 0)
-		return vector<Point>();
+    // No contours found
+    if (contours.size() == 0)
+    {
+        return vector<Point>();
+    }
 
     //find contour with the max area
     double maxArea = 0;
@@ -100,9 +103,6 @@ void Road::calculateSidesBorders()
 void Road::calculateFrontOrBackBorders()
 {
     vector<Point> contour = getContour();
-
-	if (contour.size() == 0)
-		return;
 
     int firstFivePercent = 0;
     int highestPointY = contour.back().y;

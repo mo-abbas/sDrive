@@ -6,19 +6,21 @@
 using namespace cv;
 using namespace std;
 
+class PointCloud;
+
 class OffRoadClipper
 {
     vector<Road> road;
-    vector<Mat> pointCloud;
+    PointCloud& pointCloud;
 
-    const float DISTANCE_THRESHOLD = 20.f;
+    const float DISTANCE_THRESHOLD = 25.f;
     const float ROAD_HEIGHT_THRESHOLD = 0.3f;
 
     int Sign(float value);
 
     float AverageRoadHeight();
 
-    pair<Mat, Mat> GetRoadBorders();
+    void GetRoadBorders();
     pair<Mat, Mat> GetWorldPoints(Road& roadDetector, Direction direction);
 
     int GetInRoadDirection(Mat& polyCoefficients, Direction direction);
@@ -28,8 +30,10 @@ class OffRoadClipper
 
 public:
     Mat leftCoefficients, rightCoefficients;
+    float roadAverageHeight;
 
-    OffRoadClipper(vector<Road>& road, vector<Mat>& pointCloud);
+    OffRoadClipper(vector<Road>& road, PointCloud& pointCloud);
     float EvaluatePolynomial(float x, Mat& polyCoefficients);
-    float Clip();
+    void AdjustFromPrevious(Mat previousLeft, Mat previousRight);
+    void Clip();
 };

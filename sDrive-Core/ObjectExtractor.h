@@ -3,6 +3,8 @@
 #include "UnionSet.h"
 #include "PointCloud.h"
 
+class PointCloud;
+
 class ObjectExtractor
 {
 private:

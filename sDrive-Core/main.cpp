@@ -136,10 +136,9 @@ extern "C" __declspec(dllexport) bool __cdecl processVideos(char* directory)
 	results.put("input.height", to_string(VIDEO_HEIGHT));
 	results.put("input.fps", to_string(VIDEO_FPS));
 
-	float FOVx = config.get<float>("settings.fovx");
+	const float FOVx = 90.0f;
 	float BASELINE = config.get<float>("settings.baseline");
-	float PIXEL_SIZE = config.get<float>("settings.pixel_size");
-	float FOCAL_LENGTH = config.get<float>("settings.focal_length");
+	const float PIXEL_SIZE = 1.0f;	
 	
 	for (int frame = 1;; frame++)
 	{
@@ -157,7 +156,7 @@ extern "C" __declspec(dllexport) bool __cdecl processVideos(char* directory)
 
 			input.push_back(i_left);
 			input.push_back(i_right);
-			
+
 			Mat disp_output = stereoClassifier.Predict(input);
 			disp_output.convertTo(disp_output, CV_8U);
 			
@@ -202,10 +201,16 @@ extern "C" __declspec(dllexport) bool __cdecl processVideos(char* directory)
 			roadVector.push_back(Road(road_ouput.clone(), videos_road_ouput[i / 2].second));			
 		}
 
-		Vec3f cameraLocation(-FOCAL_LENGTH, 0, -FOCAL_LENGTH);
+		float FOCAL_LENGTH = disparityVector[0].cols / 2;
+
+		Vec3f cameraLocation(-BASELINE / 2, 0, -BASELINE / 2);
 
 		PointCloud pointCloud(disparityVector, FOVx, BASELINE, FOCAL_LENGTH, PIXEL_SIZE, cameraLocation);
-		pointCloud.ClipExtraPoints(roadVector);
+		OffRoadClipper clipper(roadVector, pointCloud);
+		//clipper.AdjustFromPrevious(clipper.leftCoefficients, clipper.rightCoefficients);
+		clipper.Clip();
+
+		pointCloud.GetValuesFromClipper(clipper);
 
 		ObjectExtractor oe(pointCloud);
 
@@ -253,10 +258,22 @@ extern "C" __declspec(dllexport) bool __cdecl processVideos(char* directory)
 		results.add_child(key, cars_node);
 
 		key = "frames." + to_string(frame) + ".road.left";
-		results.put(key, to_string(roadCoefficients.first.at<float>(0, 0)) + "," + to_string(roadCoefficients.first.at<float>(1, 0)));
+		string road_left_coeffs = "";
+
+		for (int i = 0; i < roadCoefficients.first.rows; i++)
+			road_left_coeffs += to_string(roadCoefficients.first.at<float>(i, 0)) + ",";
+
+		road_left_coeffs.pop_back();	//remove last comma
+		results.put(key, road_left_coeffs);
 
 		key = "frames." + to_string(frame) + ".road.right";
-		results.put(key, to_string(roadCoefficients.second.at<float>(0, 0)) + "," + to_string(roadCoefficients.second.at<float>(1, 0)));
+		string road_right_coeffs = "";
+
+		for (int i = 0; i < roadCoefficients.second.rows; i++)
+			road_right_coeffs += to_string(roadCoefficients.second.at<float>(i, 0)) + ",";
+
+		road_right_coeffs.pop_back();	//remove last comma
+		results.put(key, road_right_coeffs);
 
 		pt::write_json("Output\\results.json", results);
 	}

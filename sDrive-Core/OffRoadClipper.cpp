@@ -2,6 +2,13 @@
 #include "PointCloud.h"
 #include "PolyFit.h"
 
+#include <boost/filesystem.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
+
+namespace fs = boost::filesystem;
+namespace pt = boost::property_tree;
+
 int OffRoadClipper::Sign(float value)
 {
     return (0 < value) - (value < 0);
@@ -36,11 +43,20 @@ float OffRoadClipper::AverageRoadHeight()
     return float(sum / count);
 }
 
-pair<Mat, Mat> OffRoadClipper::GetRoadBorders()
+void OffRoadClipper::GetRoadBorders()
 {
     pair<Mat, Mat> points = GetWorldPoints(road[0], FRONT);
     Mat leftPoints = points.first;
     Mat rightPoints = points.second;
+
+	pt::ptree config;
+
+	if (fs::exists("config.ini"))
+		pt::ini_parser::read_ini("config.ini", config);
+	else
+		throw new exception("config file not found.");
+
+	int order = config.get<int>("settings.order");
 
     if (road.size() > 1)
     {
@@ -64,7 +80,7 @@ pair<Mat, Mat> OffRoadClipper::GetRoadBorders()
     else
     {
         // We consider the dependent value is the X-axis and the independent is the Z-axis
-        Polyfit(leftPoints.col(1), leftPoints.col(0), leftCoefficients, 1);
+        Polyfit(leftPoints.col(1), leftPoints.col(0), leftCoefficients, order);
     }
 
     if (rightPoints.rows < 5)
@@ -76,11 +92,8 @@ pair<Mat, Mat> OffRoadClipper::GetRoadBorders()
     else
     {
         // We consider the dependent value is the X-axis and the independent is the Z-axis
-        Polyfit(rightPoints.col(1), rightPoints.col(0), rightCoefficients, 1);
+        Polyfit(rightPoints.col(1), rightPoints.col(0), rightCoefficients, order);
     }
-
-
-    return make_pair(leftCoefficients, rightCoefficients);
 }
 
 pair<Mat, Mat> OffRoadClipper::GetWorldPoints(Road& road, Direction direction)
@@ -155,10 +168,11 @@ float OffRoadClipper::EucliedianDistance(Vec3f point)
     return sqrt(point[0] * point[0] + point[2] * point[2]);
 }
 
-OffRoadClipper::OffRoadClipper(vector<Road>& road, vector<Mat>& pointCloud)
+OffRoadClipper::OffRoadClipper(vector<Road>& road, PointCloud& pointCloud) : pointCloud(pointCloud)
 {
     this->road = road;
-    this->pointCloud = pointCloud;
+
+    GetRoadBorders();
 }
 
 float OffRoadClipper::EvaluatePolynomial(float x, Mat& polyCoefficients)
@@ -173,13 +187,18 @@ float OffRoadClipper::EvaluatePolynomial(float x, Mat& polyCoefficients)
     return result;
 }
 
-// also returns the average height of the road
-float OffRoadClipper::Clip()
+void OffRoadClipper::AdjustFromPrevious(Mat previousLeft, Mat previousRight)
 {
-    pair<Mat, Mat> coefficients = GetRoadBorders();
-    int leftInRoadSign = GetInRoadDirection(coefficients.first, LEFT);
-    int rightInRoadSign = GetInRoadDirection(coefficients.first, RIGHT);
-    float averageHeight = AverageRoadHeight();
+    leftCoefficients = 0.8 * previousLeft + 0.2 * leftCoefficients;
+    rightCoefficients = 0.8 * previousRight + 0.2 * rightCoefficients;
+}
+
+// also returns the average height of the road
+void OffRoadClipper::Clip()
+{
+    int leftInRoadSign = GetInRoadDirection(leftCoefficients, LEFT);
+    int rightInRoadSign = GetInRoadDirection(rightCoefficients, RIGHT);
+    roadAverageHeight = AverageRoadHeight();
 
     for (int channel = 0; channel < pointCloud.size(); channel++)
     {
@@ -188,10 +207,10 @@ float OffRoadClipper::Clip()
             for (int j = 0; j < pointCloud[channel].cols; j++)
             {
                 Vec3f& point = pointCloud[channel].at<Vec3f>(i, j);
-                bool isRoad = point[1] <= (averageHeight + ROAD_HEIGHT_THRESHOLD);
+                bool isRoad = point[1] <= (roadAverageHeight + ROAD_HEIGHT_THRESHOLD);
                 bool isFar = EucliedianDistance(point) > DISTANCE_THRESHOLD;
 
-                if (isRoad || isFar || !PointIsInDirection(point, coefficients.first, leftInRoadSign) || !PointIsInDirection(point, coefficients.second, rightInRoadSign))
+                if (isRoad || isFar || !PointIsInDirection(point, leftCoefficients, leftInRoadSign) || !PointIsInDirection(point, rightCoefficients, rightInRoadSign))
                 {
                     point[0] = 0;
                     point[1] = 0;
@@ -200,6 +219,4 @@ float OffRoadClipper::Clip()
             }
         }
     }
-
-    return averageHeight;
 }
