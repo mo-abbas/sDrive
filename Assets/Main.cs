@@ -18,14 +18,15 @@ public class Tuple<T1, T2>
 public struct Frame
 {
     public int number;
-    public List<Vector2> cars;
-    public Vector2 leftRoadBorder;
-    public Vector2 rightRoadBorder;
+    public List<float> leftRoadBorder;
+    public List<float> rightRoadBorder;
 }
 
 public class Main : MonoBehaviour { 
     public Transform car_model;
     public Texture warning_image;
+
+    public event System.EventHandler rendering_started;
 
     static List<Frame> Frames = new List<Frame>();
     static Dictionary<int, Dictionary<int, Vector2>> cars = new Dictionary<int, Dictionary<int, Vector2>>();
@@ -38,8 +39,13 @@ public class Main : MonoBehaviour {
     static float video_height = 0.0f;
     static float video_fps = 0.0f;
 
+    static bool display_threshold = false;
+
     string warningText = "A car is too near to you";
     bool warning = false;
+
+    const float CAR_WIDTH = 2f;
+    const float CAR_LENGTH = 4.64f;
 
     void Start () {
         parseJSON(System.IO.Path.Combine(Application.dataPath, @"..\Output\results.json"));        
@@ -64,22 +70,44 @@ public class Main : MonoBehaviour {
 
             Frame f;
             f.number = fNumber;
-            f.cars = new List<Vector2>();
 
             try
             {
                 var jCarList = (JArray)(((JObject)p.Value)["cars"]);
+                var frameCars = new List<Vector2>();
 
                 foreach (var jCar in jCarList)
                 {
                     var cCoords = jCar.ToString().Split(',');
                     var newCar = new Vector2(float.Parse(cCoords[0]), float.Parse(cCoords[1]));
 
+                    if (frameCars.Count == 0)
+                    {
+                        frameCars.Add(newCar);
+                    }
+                    else
+                    {
+                        Vector2 oldCar = frameCars.Last();
+
+                        if ((Math.Abs(newCar.x - oldCar.x) < CAR_WIDTH) &&
+                            (Math.Abs(newCar.y - oldCar.y) < CAR_LENGTH))
+                        {
+                            frameCars[frameCars.Count - 1] = new Vector2((newCar.x + oldCar.x) / 2, (newCar.y + oldCar.y) / 2);
+                        }
+                        else
+                        {
+                            frameCars.Add(newCar);
+                        }
+                    }
+                }
+
+                foreach (var fCar in frameCars)
+                {
                     if (fNumber == 1)
                     {
                         int id = carIDs++;
                         cars.Add(id, new Dictionary<int, Vector2>());
-                        cars[id].Add(fNumber, newCar);
+                        cars[id].Add(fNumber, fCar);
                     }
                     else
                     {
@@ -95,16 +123,16 @@ public class Main : MonoBehaviour {
                             if (lastValue.Key != (fNumber - 1))
                                 continue;
 
-                            float dist = Vector2.Distance(newCar, lastValue.Value);
+                            float dist = Vector2.Distance(fCar, lastValue.Value);
 
                             minDist = Math.Min(minDist, dist);
                             if (dist == minDist)
                                 carID = car.Key;
                         }
 
-                        if (minDist <= 1.5F)
+                        if (minDist <= 2F)
                         {
-                            cars[carID].Add(fNumber, newCar);
+                            cars[carID].Add(fNumber, fCar);
                             added = true;
                         }
 
@@ -112,7 +140,7 @@ public class Main : MonoBehaviour {
                         {
                             int id = carIDs++;
                             cars.Add(id, new Dictionary<int, Vector2>());
-                            cars[id].Add(fNumber, newCar);
+                            cars[id].Add(fNumber, fCar);
                         }
                     }
                 }
@@ -120,34 +148,63 @@ public class Main : MonoBehaviour {
             catch (System.Exception) { }
 
             var rCoords = ((JObject)p.Value)["road"]["left"].ToString().Split(',');
-            f.leftRoadBorder = new Vector2(float.Parse(rCoords[0]), float.Parse(rCoords[1]));
+            f.leftRoadBorder = new List<float>();
+            for (int i = 0; i < rCoords.Length; i++)
+                f.leftRoadBorder.Add(float.Parse(rCoords[i]));
 
             rCoords = ((JObject)p.Value)["road"]["right"].ToString().Split(',');
-            f.rightRoadBorder = new Vector2(float.Parse(rCoords[0]), float.Parse(rCoords[1]));
+            f.rightRoadBorder = new List<float>();
+            for (int i = 0; i < rCoords.Length; i++)
+                f.rightRoadBorder.Add(float.Parse(rCoords[i]));
 
             Frames.Add(f);
-        }        
+        }
+
+        //foreach (var car in cars)
+        //{
+        //    Debug.Log(car.Key + " " + car.Value.First().Key + "->" + car.Value.Last().Key + " " + car.Value.First().Value.ToString() + "->" + car.Value.Last().Value.ToString());
+        //}  
+    }
+
+    float calculatePolynomial(List<float> coeffs, int value)
+    {
+        float result = 0;
+        int order = coeffs.Count - 1;
+
+        for (int o = 0; o <= order; o++)
+            result += coeffs[o] * (float)Math.Pow(value, o);
+
+        return result;
     }
 
     public void startRendering()
     {
-        //Initial values for vertices (Smoothing)
-        vertices[0] = new Vector3(Frames[0].rightRoadBorder[0] + Frames[0].rightRoadBorder[1] * 20 + 2, 0, 20);
-        vertices[1] = new Vector3(Frames[0].rightRoadBorder[0] + Frames[0].rightRoadBorder[1] * -20 + 2, 0, -20);
-        vertices[2] = new Vector3(Frames[0].leftRoadBorder[0] + Frames[0].leftRoadBorder[1] * -20 - 2, 0, -20);
-        vertices[3] = new Vector3(Frames[0].leftRoadBorder[0] + Frames[0].leftRoadBorder[1] * 20 - 2, 0, 20);
+        display_threshold = bool.Parse(new CSINI(System.IO.Path.Combine(Application.dataPath, @"..\config.ini")).IniReadValue("settings", "display_threshold"));
+
+        vertices[0] = new Vector3(calculatePolynomial(Frames[0].rightRoadBorder, 20) + 2, 0, 20);
+        vertices[1] = new Vector3(calculatePolynomial(Frames[0].rightRoadBorder, -20) + 2, 0, -20);
+        vertices[2] = new Vector3(calculatePolynomial(Frames[0].leftRoadBorder, -20) - 2, 0, -20);
+        vertices[3] = new Vector3(calculatePolynomial(Frames[0].leftRoadBorder, 20) - 2, 0, 20);
 
         InvokeRepeating("renderFrame", 0, 1 / video_fps);
     }
 
     void renderFrame()
     {
-        if (currentFrame >= Frames.Count)
+        if (currentFrame == 0)
         {
+            GetComponent<Scroller>().startScrolling();
+
+            if (rendering_started != null)
+                rendering_started(this, null);
+        }
+        else if (currentFrame >= Frames.Count)
+        {
+            GetComponent<Scroller>().stopScrolling();
             CancelInvoke();
             return;
-        }
-        
+        }  
+
         Frame frame = Frames[currentFrame++];
 
         /* The vertex indicies look like this, with these triangles
@@ -158,11 +215,10 @@ public class Main : MonoBehaviour {
          *           |/   |
          *         2 ------ 1
          */
-
-        vertices[0].x = 0.8F * vertices[0].x + 0.2F * (frame.rightRoadBorder[0] + frame.rightRoadBorder[1] * 20 + 2);
-        vertices[1].x = 0.8F * vertices[1].x + 0.2F * (frame.rightRoadBorder[0] + frame.rightRoadBorder[1] * -20 + 2);
-        vertices[2].x = 0.8F * vertices[2].x + 0.2F * (frame.leftRoadBorder[0] + frame.leftRoadBorder[1] * -20 - 2);
-        vertices[3].x = 0.8F * vertices[3].x + 0.2F * (frame.leftRoadBorder[0] + frame.leftRoadBorder[1] * 20 - 2);
+        vertices[0].x = 0.8f * vertices[0].x + 0.2f * (calculatePolynomial(frame.rightRoadBorder, 20) + 2);
+        vertices[1].x = 0.8f * vertices[1].x + 0.2f * (calculatePolynomial(frame.rightRoadBorder, -20) + 2);
+        vertices[2].x = 0.8f * vertices[2].x + 0.2f * (calculatePolynomial(frame.leftRoadBorder, -20) - 2);
+        vertices[3].x = 0.8f * vertices[3].x + 0.2f * (calculatePolynomial(frame.leftRoadBorder, 20) - 2);
 
         // list of index locations for the vertices making up each triangle
         int[] triangles = new int[6];
@@ -189,9 +245,11 @@ public class Main : MonoBehaviour {
 
         GetComponent<MeshFilter>().mesh = mesh;
 
+        warning = false;
+
         foreach (var car in cars)
         {
-            if (currentFrame == (car.Value.First().Key + 15))
+            if (currentFrame == (car.Value.First().Key + (display_threshold ? video_fps / 2 : 0)))
             {
                 if (car.Value.ContainsKey(currentFrame))
                 {
@@ -200,15 +258,13 @@ public class Main : MonoBehaviour {
                     carsIG.Add(car.Key, newCar.gameObject);
                 }
             }
-            else if ((currentFrame >= (car.Value.First().Key + 15)) && (currentFrame <= car.Value.Last().Key))
+            else if ((currentFrame >= (car.Value.First().Key + (display_threshold ? video_fps / 2 : 0))) && (currentFrame <= car.Value.Last().Key))
             { 
                 var pos = new Vector3(car.Value[currentFrame][0], 0.02F, car.Value[currentFrame][1]);
                 carsIG[car.Key].transform.position = pos;                
 
                 if (Vector3.Distance(Vector3.zero, pos) < 10)
                     warning = true;
-                else
-                    warning = false;
             }
             else
             {

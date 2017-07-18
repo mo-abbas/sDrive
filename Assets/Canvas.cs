@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -30,9 +29,15 @@ public class Canvas : MonoBehaviour {
     static bool is3dView = false;
     static List<Tuple<VideoPlayer, View>> videoPlayers = new List<Tuple<VideoPlayer, View>>();
     
-    void Start ()
+    void Start()
     {
         prepareAllVideos();
+    }
+
+    void Update()
+    {
+        if (Input.GetKey(KeyCode.Backspace))
+            UnityEngine.SceneManagement.SceneManager.LoadScene("menu");
     }
 
     public void toggle2d3dView(GameObject button)
@@ -101,10 +106,11 @@ public class Canvas : MonoBehaviour {
 
             videoPlayers.Add(new Tuple<VideoPlayer, View>(gameObject.AddComponent<VideoPlayer>(), view));
             videoPlayers.Last().First.playOnAwake = false;
+            videoPlayers.Last().First.isLooping = false;
             videoPlayers.Last().First.source = VideoSource.Url;
             videoPlayers.Last().First.url = videos[i];
             videoPlayers.Last().First.Prepare();
-
+            
             ////Wait until video is prepared
             WaitForSeconds waitTime = new WaitForSeconds(1);
             while (!videoPlayers.Last().First.isPrepared)
@@ -117,8 +123,14 @@ public class Canvas : MonoBehaviour {
         if (final)
         {
             onDifferentView(0);
-            mainModule.startRendering();
+            mainModule.rendering_started += MainModule_rendering_started;
+            mainModule.startRendering();            
         }
+    }
+
+    private void MainModule_rendering_started(object sender, System.EventArgs e)
+    {
+        playAll();
     }
 
     public void playAll()
@@ -136,8 +148,6 @@ public class Canvas : MonoBehaviour {
     public void onDifferentView(int value)
     {
         var list = videoPlayers.FindAll(t => t.Second ==  (View)value);
-
-        System.IO.File.WriteAllText("log.txt", videoPlayers.Count + " " + list.Count);
 
         vFront.GetComponent<RawImage>().texture = null;
         vRight.GetComponent<RawImage>().texture = null;
@@ -171,8 +181,6 @@ public class Canvas : MonoBehaviour {
                 vLeft.GetComponent<RawImage>().texture = list[i].First.texture;
                 vLeft.SetActive(true);
             }
-        }
-
-        playAll();
+        }        
     }
 }

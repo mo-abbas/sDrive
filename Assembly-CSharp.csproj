@@ -46,6 +46,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\CSINI.cs" />
      <Compile Include="Assets\Canvas.cs" />
      <Compile Include="Assets\Main.cs" />
      <Compile Include="Assets\Menu.cs" />
