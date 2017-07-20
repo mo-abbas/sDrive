@@ -48,6 +48,19 @@ public class Main : MonoBehaviour {
     const float CAR_LENGTH = 4.64f;
 
     void Start () {
+        Frames.Clear();
+        cars.Clear();
+        carIDs = 1;
+        currentFrame = 0;
+        carsIG.Clear();
+
+        //static List<Frame> Frames = new List<Frame>();
+        //static Dictionary<int, Dictionary<int, Vector2>> cars = new Dictionary<int, Dictionary<int, Vector2>>();
+        //static int carIDs = 1;
+        //static int currentFrame = 0;
+        //static Dictionary<int, GameObject> carsIG = new Dictionary<int, GameObject>();
+        //static Vector3[] vertices = new Vector3[4];
+
         parseJSON(System.IO.Path.Combine(Application.dataPath, @"..\Output\results.json"));        
     }
 
@@ -181,10 +194,10 @@ public class Main : MonoBehaviour {
     {
         display_threshold = bool.Parse(new CSINI(System.IO.Path.Combine(Application.dataPath, @"..\config.ini")).IniReadValue("settings", "display_threshold"));
 
-        vertices[0] = new Vector3(calculatePolynomial(Frames[0].rightRoadBorder, 20) + 2, 0, 20);
-        vertices[1] = new Vector3(calculatePolynomial(Frames[0].rightRoadBorder, -20) + 2, 0, -20);
-        vertices[2] = new Vector3(calculatePolynomial(Frames[0].leftRoadBorder, -20) - 2, 0, -20);
-        vertices[3] = new Vector3(calculatePolynomial(Frames[0].leftRoadBorder, 20) - 2, 0, 20);
+        vertices[0] = new Vector3(calculatePolynomial(Frames[0].rightRoadBorder, 120) + 2, 0, 120);
+        vertices[1] = new Vector3(calculatePolynomial(Frames[0].rightRoadBorder, -120) + 2, 0, -120);
+        vertices[2] = new Vector3(calculatePolynomial(Frames[0].leftRoadBorder, -120) - 2, 0, -120);
+        vertices[3] = new Vector3(calculatePolynomial(Frames[0].leftRoadBorder, 120) - 2, 0, 120);
 
         InvokeRepeating("renderFrame", 0, 1 / video_fps);
     }
@@ -215,10 +228,10 @@ public class Main : MonoBehaviour {
          *           |/   |
          *         2 ------ 1
          */
-        vertices[0].x = 0.8f * vertices[0].x + 0.2f * (calculatePolynomial(frame.rightRoadBorder, 20) + 2);
-        vertices[1].x = 0.8f * vertices[1].x + 0.2f * (calculatePolynomial(frame.rightRoadBorder, -20) + 2);
-        vertices[2].x = 0.8f * vertices[2].x + 0.2f * (calculatePolynomial(frame.leftRoadBorder, -20) - 2);
-        vertices[3].x = 0.8f * vertices[3].x + 0.2f * (calculatePolynomial(frame.leftRoadBorder, 20) - 2);
+        vertices[0].x = 0.8f * vertices[0].x + 0.2f * (calculatePolynomial(frame.rightRoadBorder, 120) + 2);
+        vertices[1].x = 0.8f * vertices[1].x + 0.2f * (calculatePolynomial(frame.rightRoadBorder, -120) + 2);
+        vertices[2].x = 0.8f * vertices[2].x + 0.2f * (calculatePolynomial(frame.leftRoadBorder, -120) - 2);
+        vertices[3].x = 0.8f * vertices[3].x + 0.2f * (calculatePolynomial(frame.leftRoadBorder, 120) - 2);
 
         // list of index locations for the vertices making up each triangle
         int[] triangles = new int[6];

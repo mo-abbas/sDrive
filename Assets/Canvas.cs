@@ -31,6 +31,7 @@ public class Canvas : MonoBehaviour {
     
     void Start()
     {
+        videoPlayers.Clear();
         prepareAllVideos();
     }
 
